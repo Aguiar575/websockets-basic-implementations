@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebSocket Example</title>
+</head>
+
+<body>
+    <h3>Click to send an ping</h3>
+    <button id="connectButton">Connect</button>
+    <ul id="responseList"></ul>
+
+    <script>
+        var socket;
+        var responseList;
+
+        function connectWebSocket() {
+
+            if (!window.WebSocket) {
+                alert("WebSocket is not supported by this browser.");
+                return;
+            }
+
+            socket = new WebSocket("ws://127.0.0.1:8000/ws");
+
+            responseList = document.getElementById("responseList");
+
+            socket.onopen = function (event) {
+                console.log("WebSocket connection established.");
+
+                socket.send("ping");
+            };
+
+            socket.onmessage = function (event) {
+                console.log("Received message:", event.data);
+
+                var listItem = document.createElement("li");
+                listItem.textContent = "Response: " + event.data;
+                responseList.appendChild(listItem);
+            };
+
+            socket.onclose = function (event) {
+                console.log("WebSocket connection closed.");
+            };
+        }
+
+        var connectButton = document.getElementById("connectButton");
+        connectButton.addEventListener("click", connectWebSocket);
+    </script>
+</body>
+
+</html>
